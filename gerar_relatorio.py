@@ -1,13 +1,26 @@
 import os
 from datetime import date
 import requests
+import streamlit as st
 from dotenv import load_dotenv
 
 load_dotenv()
 
-JIRA_URL = os.getenv("JIRA_URL")
-JIRA_EMAIL = os.getenv("JIRA_EMAIL")
-JIRA_API_TOKEN = os.getenv("JIRA_API_TOKEN")
+
+def obter_config(chave):
+    """Busca a configuração no .env local, ou nos Secrets do Streamlit Cloud."""
+    valor = os.getenv(chave)
+    if valor:
+        return valor
+    try:
+        return st.secrets[chave]
+    except Exception:
+        return None
+
+
+JIRA_URL = obter_config("JIRA_URL")
+JIRA_EMAIL = obter_config("JIRA_EMAIL")
+JIRA_API_TOKEN = obter_config("JIRA_API_TOKEN")
 
 
 def buscar_tarefas():
@@ -96,6 +109,7 @@ def gerar_relatorio_tecnico(tarefas):
 
     return "\n".join(linhas)
 
+
 def gerar_relatorio_executivo(tarefas):
     """Simula o que uma IA generativa produziria: um relatório executivo, curto e direto."""
     hoje = date.today()
@@ -137,6 +151,7 @@ def gerar_relatorio_executivo(tarefas):
     linhas.append("Próximo marco: acompanhar a fase em andamento e manter o ritmo atual de entregas.")
 
     return "\n".join(linhas)
+
 
 if __name__ == "__main__":
     tarefas = buscar_tarefas()
