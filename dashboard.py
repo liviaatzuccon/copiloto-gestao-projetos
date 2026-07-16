@@ -2,6 +2,7 @@ import streamlit as st
 import altair as alt
 from gerar_relatorio import buscar_tarefas, gerar_relatorio_tecnico, gerar_relatorio_executivo
 from curva_s import calcular_curva_s
+from guardrails import validar_relatorio
 
 st.set_page_config(page_title="Copiloto de Gestão de Projetos", page_icon="🤖")
 
@@ -23,6 +24,15 @@ if st.button("Gerar relatório"):
             relatorio = gerar_relatorio_executivo(tarefas)
 
     st.success("Relatório gerado com sucesso!")
+
+    problemas = validar_relatorio(tarefas, relatorio)
+    if problemas:
+        st.warning("⚠️ Guardrail detectou possíveis inconsistências:")
+        for p in problemas:
+            st.write(f"- {p}")
+    else:
+        st.caption("✅ Guardrail: relatório validado, sem inconsistências detectadas.")
+
     st.text(relatorio)
 
     with st.expander("Ver dados brutos do Jira"):
