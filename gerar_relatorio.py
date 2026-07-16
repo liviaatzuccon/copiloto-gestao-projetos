@@ -16,7 +16,7 @@ def buscar_tarefas():
     params = {
         "jql": "project = CLOUD AND issuetype != Epic ORDER BY key ASC",
         "maxResults": 50,
-        "fields": "summary,status,parent,duedate"
+        "fields": "summary,status,parent,duedate,resolutiondate"
     }
     response = requests.get(
         url,
